@@ -1,0 +1,37 @@
+-- NOTE FROM CASUALDEV
+-- BEFORE EXECUTING WAIT UNTIL CUTSCENE ENDS
+-- IF NOT USING LOADSTRING CHANGE THE COMMENTS TO GETGENV :thumbs_up:
+--/ set if u want to start moneyfarm or print the next code
+--getgenv().printcode = 
+--getgenv().moneyfarm = 
+--getgenv().gencodeonjoin = 
+local printwait = "5"-- put how long u want it to wait for to print the next code
+local checkcode = "1"-- put how long u want it to wait to check a code  
+
+--/ make locals for getting code value
+local player = game:GetService("Players").LocalPlayer
+local number = player.GeneratedNumber
+
+spawn(function()
+    if gencodeonjoin == true then
+        game:GetService("ReplicatedStorage").Events.GenerateNumber:FireServer()
+end
+end)
+
+spawn(function()
+while printcode == true do
+    print("Next code: "..tostring(number.Value))
+    wait(printwait)
+end
+end)
+
+spawn(function()
+while moneyfarm == true do
+local args = {
+    [1] = tostring(number.Value)
+}
+
+game:GetService("ReplicatedStorage").Events.CheckNumber:FireServer(unpack(args))
+wait(checkcode)
+end
+end)
