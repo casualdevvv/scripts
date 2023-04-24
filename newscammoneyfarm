@@ -1,0 +1,49 @@
+getgenv().autocard = false
+-- activating this will autofarm cards
+
+local player = game:GetService("Players").LocalPlayer.Name -- defines the player name
+local player1 = game:GetService("Players").LocalPlayer -- does the same thing but fixes a bug
+local folder = game.Workspace.Tycoons -- defines the tycoons folder
+
+--/ Look for the localplayers tycoon name
+for i, v in pairs(folder:GetChildren()) do
+    local checkowner = v:FindFirstChild("TycoonOwner")
+    if checkowner and checkowner.Value == player then
+        print(v.Name)
+        ownedtycoon = v.Name
+    end
+end
+
+local pcprox = game:GetService("Workspace").Tycoons[ownedtycoon].StaticItems.PC.Prompt.ProximityPrompt
+
+function sitatpc()
+    spawn(function()
+        wait(0.5)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Tycoons[ownedtycoon].StaticItems.PC.Chair.Seat.CFrame
+        wait(0.5)
+        fireproximityprompt(pcprox)
+        wait(0.5)
+    end)
+end
+
+function gennumber()
+    spawn(function()
+        game:GetService("ReplicatedStorage").Events.GenerateNumber:FireServer()
+    end)
+end
+
+spawn(function()
+    local number = player1.GeneratedNumber
+    sitatpc()
+    wait(0.5)
+    while autocard == true do
+        gennumber()
+        wait(1)
+        local args = {[1] = tostring(number.Value)}
+        game:GetService("ReplicatedStorage").Events.CheckNumber:FireServer(unpack(args))
+        wait(10)
+    end
+end)
+
+sitatpc() -- this fixes a generate number bug :)
+
