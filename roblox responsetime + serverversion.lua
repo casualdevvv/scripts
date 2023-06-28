@@ -1,17 +1,21 @@
 local r = game:GetService("RobloxReplicatedStorage"):FindFirstChild("GetServerVersion")
+local serverType = game:GetService("RobloxReplicatedStorage"):FindFirstChild("GetServerType")
 
-if r then
-    local function GetResponseTime()
+if r and serverType and r:IsA("RemoteFunction") and serverType:IsA("RemoteFunction") then
+    local function GetResponse()
         local startTime = tick()
-        local response = r:InvokeServer()
+        local serverVersion = r:InvokeServer()
+        local serverTypeResult = serverType:InvokeServer()
         local endTime = tick()
         local responseTime = (endTime - startTime) * 1000
-        return responseTime, response 
+        return responseTime, serverVersion, serverTypeResult
     end
 
-    local responseTime, serverVersion = GetResponseTime()
+    local responseTime, serverVersion, serverTypeResult = GetResponse()
+
     print("Response time: " .. responseTime .. "ms")
     print("Server version: " .. serverVersion)
+    print("Server type: " .. serverTypeResult)
 else
-    print("Child object 'GetServerVersion' not found in RobloxReplicatedStorage.")
+    print("RemoteFunction(s) not found.")
 end
